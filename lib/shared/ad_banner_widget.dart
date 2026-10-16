@@ -1,0 +1,76 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:pdf_builder/core/subscription_service.dart';
+
+class AdBannerWidget extends StatefulWidget {
+  const AdBannerWidget({super.key});
+
+  @override
+  State<AdBannerWidget> createState() => _AdBannerWidgetState();
+}
+
+class _AdBannerWidgetState extends State<AdBannerWidget> {
+  BannerAd? _bannerAd;
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (!SubscriptionService.instance.isPremium) {
+      _loadAd();
+    }
+  }
+
+  void _loadAd() {
+
+    final adUnitId = Platform.isAndroid
+        ? 'ca-app-pub-3940256099942544/6300978112'
+        : 'ca-app-pub-3940256099942544/2934735712';
+    //test
+    // final adUnitId = Platform.isAndroid
+    //     ? 'ca-app-pub-3940256099942544/6300978111'
+    //     : 'ca-app-pub-3940256099942544/2934735716';
+
+    // live with dummy ids
+    // final adUnitId = Platform.isAndroid
+    //     ? 'ca-app-pub-9085836508167933/9145858622'
+    //     : 'ca-app-pub-9085836508167933/3297626412';
+
+    _bannerAd = BannerAd(
+      adUnitId: adUnitId,
+      request: const AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (ad) {
+          if (mounted) {
+            setState(() => _isLoaded = true);
+          }
+        },
+        onAdFailedToLoad: (ad, err) {
+          ad.dispose();
+        },
+      ),
+    )..load();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (SubscriptionService.instance.isPremium || !_isLoaded || _bannerAd == null) {
+      return const SizedBox.shrink();
+    }
+
+    return Container(
+      alignment: Alignment.center,
+      width: _bannerAd!.size.width.toDouble(),
+      height: _bannerAd!.size.height.toDouble(),
+      child: AdWidget(ad: _bannerAd!),
+    );
+  }
+}
