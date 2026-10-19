@@ -12,8 +12,16 @@ class SubscriptionService {
   Future<void> init() async {
     try {
       await Purchases.setLogLevel(LogLevel.debug);
-      // Replace with RevenueCat API key when configuring production builds
-      PurchasesConfiguration configuration = PurchasesConfiguration("goog_api_key_placeholder");
+      
+      PurchasesConfiguration configuration;
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        // Replace with your RevenueCat iOS App Store API Key (starts with appl_)
+        configuration = PurchasesConfiguration("appl_ios_revenue_cat_api_key_placeholder");
+      } else {
+        // Replace with your RevenueCat Android Google Play API Key (starts with goog_)
+        configuration = PurchasesConfiguration("goog_google_play_revenue_cat_api_key_placeholder");
+      }
+
       await Purchases.configure(configuration);
       await checkSubscriptionStatus();
     } catch (e) {
@@ -52,8 +60,10 @@ class SubscriptionService {
     int count = prefs.getInt(_keyConversionCount) ?? 0;
 
     if (savedDate != today) {
-      count = 0;
+      count = 1; // first try of the day
       await prefs.setString(_keyConversionDate, today);
+      await prefs.setInt(_keyConversionCount, count);
+      return true;
     }
 
     if (count >= 3) {
@@ -83,8 +93,10 @@ class SubscriptionService {
     int count = prefs.getInt(_keyOcrCount) ?? 0;
 
     if (savedDate != today) {
-      count = 0;
+      count = 1;
       await prefs.setString(_keyOcrDate, today);
+      await prefs.setInt(_keyOcrCount, count);
+      return true;
     }
 
     if (count >= 1) {

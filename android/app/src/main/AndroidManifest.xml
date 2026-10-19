@@ -10,6 +10,8 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
+    <uses-permission android:name="com.android.vending.BILLING" />
+
     <!-- Advertising ID permission -->
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
 
