@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:pdf_builder/core/subscription_service.dart';
 
 class SubscriptionScreen extends StatefulWidget {
@@ -84,6 +87,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     } finally {
       if (mounted) {
         setState(() => _isPurchasing = false);
+      }
+    }
+  }
+
+  Future<void> _launchUrl(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not launch $urlString')),
+        );
       }
     }
   }
@@ -188,6 +202,22 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           ),
                         ],
                       ],
+                      const SizedBox(height: 28),
+                      if(Platform.isIOS)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          TextButton(
+                            onPressed: () => _launchUrl('https://virajmalani-31.github.io/privacy-policy/pdf-builder-pro.html'),
+                            child: const Text('Privacy Policy', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          ),
+                          const Text('•', style: TextStyle(color: Colors.grey)),
+                          TextButton(
+                            onPressed: () => _launchUrl('https://www.apple.com/legal/internet-services/itunes/dev/stdeula/'),
+                            child: const Text('Terms of Use', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

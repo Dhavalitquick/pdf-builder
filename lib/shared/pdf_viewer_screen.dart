@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as p;
 import 'package:pdfx/pdfx.dart' as pdfx;
-import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
@@ -187,8 +185,12 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
             tooltip: 'Share PDF',
             onPressed: () async {
               if (await File(widget.path).exists()) {
-                await Share.shareXFiles([XFile(widget.path)], text: widget.title);
-              }
+                await SharePlus.instance.share(
+                  ShareParams(
+                    files: [XFile(widget.path)],
+                    text: widget.title,
+                  ),
+                );              }
             },
           ),
           IconButton(

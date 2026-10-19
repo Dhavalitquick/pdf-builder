@@ -16,10 +16,10 @@ class SubscriptionService {
       PurchasesConfiguration configuration;
       if (defaultTargetPlatform == TargetPlatform.iOS) {
         // Replace with your RevenueCat iOS App Store API Key (starts with appl_)
-        configuration = PurchasesConfiguration("appl_ios_revenue_cat_api_key_placeholder");
+        configuration = PurchasesConfiguration("appl_PHvMDpCpoCLeUjQPxOxgWMrXEaD");
       } else {
         // Replace with your RevenueCat Android Google Play API Key (starts with goog_)
-        configuration = PurchasesConfiguration("goog_google_play_revenue_cat_api_key_placeholder");
+        configuration = PurchasesConfiguration("goog_ZBHBdfBRUcGFWkiLpAGMIdwcQcb");
       }
 
       await Purchases.configure(configuration);

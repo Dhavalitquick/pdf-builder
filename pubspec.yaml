@@ -69,6 +69,9 @@ dependencies:
   google_fonts: ^6.3.2
   flutter_animate: ^4.5.2
 
+  # URL Launcher
+  url_launcher: ^6.3.1
+
   # Permissions
   permission_handler: ^13.0.2
   media_store_plus: ^0.1.3
