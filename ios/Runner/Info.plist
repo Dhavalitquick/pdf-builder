@@ -25,9 +25,15 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>GADApplicationIdentifier</key>
-    <string>ca-app-pub-9085836508167933~1852768527</string>
+	<string>ca-app-pub-9085836508167933~1852768527</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to scan documents.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs permission to save converted images to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photo library access to select images for PDF conversion.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -68,11 +74,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>NSCameraUsageDescription</key>
-	<string>This app needs camera access to scan documents.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs photo library access to select images for PDF conversion.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>This app needs permission to save converted images to your photo library.</string>
 </dict>
 </plist>
