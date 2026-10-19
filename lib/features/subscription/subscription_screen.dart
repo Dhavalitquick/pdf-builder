@@ -106,61 +106,91 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  const Icon(Icons.stars, size: 80, color: Colors.amber),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Unlock All Pro Features',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Get unlimited conversions, OCR text extraction, and password protection.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                  ),
-                  const SizedBox(height: 28),
-                  _buildFeatureRow(Icons.check_circle, 'No Advertisements'),
-                  _buildFeatureRow(Icons.check_circle, 'Unlimited PDF Conversions (No 3/day limit)'),
-                  _buildFeatureRow(Icons.check_circle, 'Unlimited OCR Text Extractions'),
-                  _buildFeatureRow(Icons.check_circle, 'PDF Password Protection & Encryption'),
-                  _buildFeatureRow(Icons.check_circle, 'Advanced Page Editor & Markup'),
-                  const SizedBox(height: 36),
-                  if (_isPurchasing)
-                    const Center(child: CircularProgressIndicator())
-                  else ...[
-                    // Monthly Plan Card
-                    _buildPlanCard(
-                      title: 'Monthly Plan',
-                      price: monthlyPkg?.storeProduct.priceString ?? '\$4.99 / month',
-                      subtitle: 'Billed monthly, cancel anytime.',
-                      isBestValue: false,
-                      onPressed: monthlyPkg != null ? () => _buyPackage(monthlyPkg) : () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('RevenueCat product not configured in test sandbox yet.')),
-                        );
-                      },
+          : currentOffering == null || (monthlyPkg == null && annualPkg == null)
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.stars, size: 64, color: Colors.amber),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'No subscription plans available',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Please check your internet connection or store configuration.',
+                          style: TextStyle(color: Colors.grey[600]),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() => _isLoading = true);
+                            _fetchOfferings();
+                          },
+                          child: const Text('Retry'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 16),
-                    // Yearly Plan Card
-                    _buildPlanCard(
-                      title: 'Yearly Plan (Best Value)',
-                      price: annualPkg?.storeProduct.priceString ?? '\$39.99 / year',
-                      subtitle: 'Save 33% with annual billing.',
-                      isBestValue: true,
-                      onPressed: annualPkg != null ? () => _buyPackage(annualPkg) : () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('RevenueCat product not configured in test sandbox yet.')),
-                        );
-                      },
-                    ),
-                  ],
-                ],
-              ),
-            ),
+                  ),
+                )
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    children: [
+                      const Icon(Icons.stars, size: 80, color: Colors.amber),
+                      const SizedBox(height: 16),
+                      const Text(
+                        'Unlock All Pro Features',
+                        style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Get unlimited conversions, OCR text extraction, and password protection.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                      ),
+                      const SizedBox(height: 28),
+                      _buildFeatureRow(Icons.check_circle, 'No Advertisements'),
+                      _buildFeatureRow(Icons.check_circle, 'Unlimited PDF Conversions (No 3/day limit)'),
+                      _buildFeatureRow(Icons.check_circle, 'Unlimited OCR Text Extractions'),
+                      _buildFeatureRow(Icons.check_circle, 'PDF Password Protection & Encryption'),
+                      _buildFeatureRow(Icons.check_circle, 'Advanced Page Editor & Markup'),
+                      const SizedBox(height: 36),
+                      if (_isPurchasing)
+                        const Center(child: CircularProgressIndicator())
+                      else ...[
+                        if (monthlyPkg != null) ...[
+                          _buildPlanCard(
+                            title: 'Monthly Plan',
+                            price: monthlyPkg.storeProduct.priceString,
+                            subtitle: monthlyPkg.storeProduct.description.isNotEmpty
+                                ? monthlyPkg.storeProduct.description
+                                : 'Billed monthly, cancel anytime.',
+                            isBestValue: false,
+                            onPressed: () => _buyPackage(monthlyPkg),
+                          ),
+                          const SizedBox(height: 16),
+                        ],
+                        if (annualPkg != null) ...[
+                          _buildPlanCard(
+                            title: 'Yearly Plan (Best Value)',
+                            price: annualPkg.storeProduct.priceString,
+                            subtitle: annualPkg.storeProduct.description.isNotEmpty
+                                ? annualPkg.storeProduct.description
+                                : 'Save 33% with annual billing.',
+                            isBestValue: true,
+                            onPressed: () => _buyPackage(annualPkg),
+                          ),
+                        ],
+                      ],
+                    ],
+                  ),
+                ),
     );
   }
 
